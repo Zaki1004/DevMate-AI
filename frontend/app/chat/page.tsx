@@ -6,11 +6,7 @@ import ChatBubble from "@/components/chat/chat-bubble";
 import ChatInput from "@/components/chat/chat-input";
 import EmptyState from "@/components/chat/empty-state";
 import { sendMessage } from "@/services/chat-service";
-
-type Message = {
-  message: string;
-  isUser: boolean;
-};
+import { Message } from "@/types/chat";
 
 export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -23,10 +19,16 @@ export default function ChatPage() {
     });
   }, [messages]);
 
-  const handleSend = async (message: string) => {
+  const handleSend = async (message: string, image?: File) => {
     const userMessage: Message = {
       message,
       isUser: true,
+      attachment: image
+        ? {
+            name: image.name,
+            preview: URL.createObjectURL(image),
+          }
+        : undefined,
     };
 
     setMessages((prev) => [...prev, userMessage]);
@@ -34,7 +36,7 @@ export default function ChatPage() {
     try {
       setLoading(true);
 
-      const response = await sendMessage(message);
+      const response = await sendMessage(message, image);
 
       const botMessage: Message = {
         message: response.answer,
@@ -69,6 +71,7 @@ export default function ChatPage() {
                 key={index}
                 message={chat.message}
                 isUser={chat.isUser}
+                attachment={chat.attachment}
               />
             ))}
 

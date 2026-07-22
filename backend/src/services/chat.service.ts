@@ -1,8 +1,9 @@
 import groq from "../utils/groq";
+import { ChatRequest, ChatResponse } from "../types/chat";
 
 export const generateResponse = async (
-  message: string
-) => {
+  request: ChatRequest
+): Promise<ChatResponse> => {
   const completion =
     await groq.chat.completions.create({
       model: "llama-3.3-70b-versatile",
@@ -40,13 +41,13 @@ Aturan:
         },
         {
           role: "user",
-          content: message,
+          content: request.message,
         },
       ],
     });
 
   return {
     answer:
-      completion.choices[0].message.content,
+      completion.choices[0].message.content ?? "",
   };
 };
