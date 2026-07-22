@@ -6,8 +6,8 @@ const HeroSection = () => {
   return (
     <section className="flex min-h-screen items-center justify-center px-6">
       <div className="max-w-3xl text-center">
-        <p className="mb-4 text-sm font-medium text-muted-foreground">
-          🚀 Powered by Groq
+        <p className="mb-4 text-lg font-medium text-muted-foreground">
+          🚀 Powered your code
         </p>
 
         <h1 className="text-5xl font-bold tracking-tight">DevMate AI</h1>
