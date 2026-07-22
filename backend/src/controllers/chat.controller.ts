@@ -6,20 +6,15 @@ export const chatController = async (
   res: Response
 ) => {
   try {
-    const { message } = req.body;
+    const { message, sourceCode } = req.body;
 
     const image = req.file;
 
-    /**
-     * Sprint 5.2
-     * Untuk sementara kita hanya memastikan
-     * image berhasil diterima.
-     */
     console.log("Message:", message);
-
+    console.log("Source Code:", sourceCode);
     console.log("Image:", image);
 
-    const response = await generateResponse({ message, image });
+    const response = await generateResponse({ message, sourceCode, image });
 
     return res.status(200).json({
       ...response,

@@ -19,10 +19,15 @@ export default function ChatPage() {
     });
   }, [messages]);
 
-  const handleSend = async (message: string, image?: File) => {
+  const handleSend = async (
+    message: string,
+    image?: File,
+    sourceCode?: string,
+  ) => {
     const userMessage: Message = {
       message,
       isUser: true,
+      sourceCode,
       attachment: image
         ? {
             name: image.name,
@@ -36,7 +41,7 @@ export default function ChatPage() {
     try {
       setLoading(true);
 
-      const response = await sendMessage(message, image);
+      const response = await sendMessage(message, sourceCode, image);
 
       const botMessage: Message = {
         message: response.answer,

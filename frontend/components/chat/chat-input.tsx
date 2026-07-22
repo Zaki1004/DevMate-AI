@@ -1,18 +1,18 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Paperclip, SendHorizontal } from "lucide-react";
+import { CodeXml, Paperclip, SendHorizontal } from "lucide-react";
 
 import ImageUpload from "../upload/image-upload";
 import ImagePreview from "../upload/image-priview";
-
+import CodeInput from "@/components/code/code-input";
 import { SelectedImage } from "../../types/vision";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 type ChatInputProps = {
-  onSend: (message: string, image?: File) => void;
+  onSend: (message: string, image?: File, sourceCode?: string) => void;
 };
 
 const ChatInput = ({ onSend }: ChatInputProps) => {
@@ -20,18 +20,19 @@ const ChatInput = ({ onSend }: ChatInputProps) => {
   const [selectedImage, setSelectedImage] = useState<SelectedImage | null>(
     null,
   );
+  const [showCodeInput, setShowCodeInput] = useState(false);
+  const [sourceCode, setSourceCode] = useState("");
 
   const inputFileRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = () => {
     if (!message.trim() && !selectedImage) return;
 
-    // Sprint 5.1
-    // Untuk sementara hanya mengirim text.
-    // Image akan diproses di Sprint 5.2
-    onSend(message, selectedImage?.file);
+    onSend(message, selectedImage?.file, sourceCode);
 
     setMessage("");
+    setSourceCode("");
+    setShowCodeInput(false);
 
     if (selectedImage) {
       URL.revokeObjectURL(selectedImage.preview);
@@ -79,6 +80,11 @@ const ChatInput = ({ onSend }: ChatInputProps) => {
           </div>
         )}
 
+        {/* Code Input */}
+        {showCodeInput && (
+          <CodeInput value={sourceCode} onChange={setSourceCode} />
+        )}
+
         <div className="flex items-center gap-3">
           <Input
             className="h-12 flex-1"
@@ -105,6 +111,16 @@ const ChatInput = ({ onSend }: ChatInputProps) => {
 
           {/* Hidden Input */}
           <ImageUpload ref={inputFileRef} onSelect={handleSelectImage} />
+
+          <Button
+            type="button"
+            size="icon"
+            variant={showCodeInput ? "destructive" : "outline"}
+            onClick={() => setShowCodeInput((prev) => !prev)}
+            className="h-12 w-12"
+          >
+            <CodeXml size={20} />
+          </Button>
 
           {/* Send Button */}
           <Button
