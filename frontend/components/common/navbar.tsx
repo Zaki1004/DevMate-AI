@@ -1,4 +1,14 @@
+"use client";
+
+import { usePathname } from "next/navigation";
+
 const Navbar = () => {
+  const pathname = usePathname();
+
+  if (pathname === "/chat") {
+    return null;
+  }
+
   return (
     <header className="border-b bg-white">
       <div className="mx-auto flex h-16 items-center justify-between px-20 py-10">
