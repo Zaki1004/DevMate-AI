@@ -7,6 +7,7 @@ import ChatInput from "@/components/chat/chat-input";
 import EmptyState from "@/components/chat/empty-state";
 import { sendMessage } from "@/services/chat-service";
 import { Message } from "@/types/chat";
+import Loading from "@/components/common/loading";
 
 export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -65,12 +66,14 @@ export default function ChatPage() {
   };
 
   return (
-    <main className="flex h-screen flex-col">
-      <div className="flex-1 overflow-y-auto">
-        {messages.length === 0 ? (
+    <div className="flex flex-1 flex-col overflow-hidden bg-[#fafafa]">
+      {messages.length === 0 ? (
+        <div className="flex flex-1 items-center justify-center px-6">
           <EmptyState />
-        ) : (
-          <div className="mx-auto flex max-w-4xl flex-col gap-4 p-6">
+        </div>
+      ) : (
+        <div className="flex-1 overflow-y-auto">
+          <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-48">
             {messages.map((chat, index) => (
               <ChatBubble
                 key={index}
@@ -81,18 +84,18 @@ export default function ChatPage() {
             ))}
 
             {loading && (
-              <div className="flex justify-start">
-                <div className="rounded-xl bg-gray-100 px-5 py-4">
-                  DevMate sedang berpikir...
-                </div>
+              <div className="flex items-center gap-3">
+                <Loading />
+                <span>DevMate AI sedang berpikir...</span>
               </div>
             )}
+
+            <div ref={bottomRef} />
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       <ChatInput onSend={handleSend} />
-      <div ref={bottomRef} />
-    </main>
+    </div>
   );
 }

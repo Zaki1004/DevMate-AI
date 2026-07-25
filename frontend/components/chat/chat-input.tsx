@@ -68,8 +68,8 @@ const ChatInput = ({ onSend }: ChatInputProps) => {
   }, [selectedImage]);
 
   return (
-    <div className="border-t bg-background p-4">
-      <div className="mx-auto max-w-5xl">
+    <div className="fixed bottom-6 left-1/2 z-50 w-full max-w-4xl -translate-x-1/2 px-3 sm:px-4">
+      <div className="mx-auto w-full max-w-4xl">
         {/* Image Preview */}
         {selectedImage && (
           <div className="mb-3">
@@ -85,52 +85,54 @@ const ChatInput = ({ onSend }: ChatInputProps) => {
           <CodeInput value={sourceCode} onChange={setSourceCode} />
         )}
 
-        <div className="flex items-center gap-3">
-          <Input
-            className="h-12 flex-1"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Ask DevMate AI..."
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleSubmit();
-              }
-            }}
-          />
+        <div className="rounded-xl p-2 border border-zinc-200 bg-white/95 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 focus-within:shadow-[0_12px_40px_rgb(0,0,0,0.12)]">
+          <div className="flex items-center gap-3">
+            <Input
+              className="h-10 sm:h-11 text-sm sm:text-base"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Ask About React, Next.js, TypeScript, Tailwind CSS..."
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSubmit();
+                }
+              }}
+            />
 
-          {/* Upload Button */}
-          <Button
-            type="button"
-            size="icon"
-            variant="outline"
-            onClick={openFilePicker}
-            className="h-12 w-12"
-          >
-            <Paperclip className="h-5 w-5" />
-          </Button>
+            {/* Upload Button */}
+            <Button
+              type="button"
+              size="icon"
+              variant="outline"
+              onClick={openFilePicker}
+              className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"
+            >
+              <Paperclip className="h-5 w-5" />
+            </Button>
 
-          {/* Hidden Input */}
-          <ImageUpload ref={inputFileRef} onSelect={handleSelectImage} />
+            {/* Hidden Input */}
+            <ImageUpload ref={inputFileRef} onSelect={handleSelectImage} />
 
-          <Button
-            type="button"
-            size="icon"
-            variant={showCodeInput ? "destructive" : "outline"}
-            onClick={() => setShowCodeInput((prev) => !prev)}
-            className="h-12 w-12"
-          >
-            <CodeXml size={20} />
-          </Button>
+            <Button
+              type="button"
+              size="icon"
+              variant={showCodeInput ? "destructive" : "outline"}
+              onClick={() => setShowCodeInput((prev) => !prev)}
+              className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"
+            >
+              <CodeXml size={20} />
+            </Button>
 
-          {/* Send Button */}
-          <Button
-            type="button"
-            size="icon"
-            onClick={handleSubmit}
-            className="h-12 w-12"
-          >
-            <SendHorizontal className="h-5 w-5" />
-          </Button>
+            {/* Send Button */}
+            <Button
+              type="button"
+              size="icon"
+              onClick={handleSubmit}
+              className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"
+            >
+              <SendHorizontal className="h-5 w-5" />
+            </Button>
+          </div>
         </div>
       </div>
     </div>
