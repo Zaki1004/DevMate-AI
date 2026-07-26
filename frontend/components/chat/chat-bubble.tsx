@@ -6,10 +6,16 @@ import CodeBlock from "@/components/code/code-block";
 type ChatBubbleProps = {
   message: string;
   isUser: boolean;
+  streaming?: boolean;
   attachment?: Attachment;
 };
 
-const ChatBubble = ({ message, isUser, attachment }: ChatBubbleProps) => {
+const ChatBubble = ({
+  message,
+  isUser,
+  attachment,
+  streaming,
+}: ChatBubbleProps) => {
   return (
     <div
       className={`flex w-full ${
@@ -17,10 +23,10 @@ const ChatBubble = ({ message, isUser, attachment }: ChatBubbleProps) => {
       } animate-in fade-in duration-300`}
     >
       <div
-        className={`my-2 max-w-[92%] sm:max-w-[85%] lg:max-w-[75%] overflow-hidden break-words rounded-3xl px-5 py-4 shadow-sm hover:shadow-md transition-all duration-200
+        className={`my-2 max-w-[92%] sm:max-w-[85%] lg:max-w-[75%] overflow-hidden break-words rounded-3xl px-2 py-2 shadow-sm hover:shadow-md transition-all duration-200
     ${
       isUser
-        ? "bg-black text-white"
+        ? "bg-gray-200 text-black"
         : "border border-zinc-200 bg-white text-zinc-800"
     }
   `}
@@ -43,7 +49,7 @@ const ChatBubble = ({ message, isUser, attachment }: ChatBubbleProps) => {
           </div>
         )}
         <div
-          className="    prose-zinc
+          className="    prose-zinc py-2 px-4
     prose-sm
     max-w-none
 
@@ -108,7 +114,7 @@ const ChatBubble = ({ message, isUser, attachment }: ChatBubbleProps) => {
               ),
 
               p: ({ children }) => (
-                <p className="mb-4 leading-7 whitespace-pre-wrap">{children}</p>
+                <p className="leading-7 whitespace-pre-wrap">{children}</p>
               ),
 
               ul: ({ children }) => (
@@ -194,6 +200,20 @@ const ChatBubble = ({ message, isUser, attachment }: ChatBubbleProps) => {
           >
             {message}
           </ReactMarkdown>
+
+          {streaming && !isUser && (
+            <span
+              className="
+      ml-1
+      inline-block
+      animate-pulse
+      font-bold
+      text-zinc-500
+    "
+            >
+              ▍
+            </span>
+          )}
         </div>
       </div>
     </div>

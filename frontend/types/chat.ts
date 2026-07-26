@@ -1,6 +1,7 @@
 export interface Message {
   message: string;
   isUser: boolean;
+  streaming?: boolean;
   sourceCode?: string;
   attachment?: Attachment;
 }

@@ -1,7 +1,9 @@
 import { Router } from "express";
 
-import { chatController } from "../controllers/chat.controller";
 import { upload } from "../middleware/upload.middleware";
+import {
+  chatController,
+} from "../controllers/chat.controller";
 
 const router = Router();
 

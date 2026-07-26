@@ -5,20 +5,56 @@ import { useState, useEffect, useRef } from "react";
 import ChatBubble from "@/components/chat/chat-bubble";
 import ChatInput from "@/components/chat/chat-input";
 import EmptyState from "@/components/chat/empty-state";
-import { sendMessage } from "@/services/chat-service";
+import { streamMessage } from "@/services/chat-service";
 import { Message } from "@/types/chat";
 import Loading from "@/components/common/loading";
 
 export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [autoSmartScroll, setAutoSmartScroll] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const lastUserMessageRef = useRef<HTMLDivElement>(null);
+  const [streaming, setStreaming] = useState(false);
 
-  useEffect(() => {
+  const handleScroll = () => {
+    if (!chatContainerRef.current) return;
+
+    const container = chatContainerRef.current;
+
+    const distanceFromBottom =
+      container.scrollHeight - container.scrollTop - container.clientHeight;
+
+    setAutoSmartScroll(distanceFromBottom < 300);
+  };
+
+  const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
     bottomRef.current?.scrollIntoView({
+      behavior,
+      block: "end",
+    });
+  };
+
+  const focusLatestConversation = () => {
+    if (!chatContainerRef.current || !lastUserMessageRef.current) {
+      return;
+    }
+
+    const container = chatContainerRef.current;
+
+    const target =
+      lastUserMessageRef.current.offsetTop - container.clientHeight / 2;
+
+    container.scrollTo({
+      top: Math.max(target, 0),
       behavior: "smooth",
     });
-  }, [messages]);
+  };
+
+  useEffect(() => {
+    if (!autoSmartScroll) return;
+    scrollToBottom("smooth");
+  }, [messages, autoSmartScroll]);
 
   const handleSend = async (
     message: string,
@@ -37,31 +73,76 @@ export default function ChatPage() {
         : undefined,
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    setStreaming(true);
+
+    /**
+     * Tambahkan user + bubble AI kosong
+     */
+    setMessages((prev) => [
+      ...prev,
+      userMessage,
+      {
+        message: "",
+        isUser: false,
+        streaming: true,
+      },
+    ]);
+
+    setAutoSmartScroll(true);
+
+    requestAnimationFrame(() => {
+      focusLatestConversation();
+    });
 
     try {
-      setLoading(true);
+      await streamMessage(message, sourceCode, image, (chunk) => {
+        setMessages((prev) => {
+          const updated = [...prev];
 
-      const response = await sendMessage(message, sourceCode, image);
+          const lastIndex = updated.length - 1;
 
-      const botMessage: Message = {
-        message: response.answer,
-        isUser: false,
-      };
+          updated[lastIndex] = {
+            ...updated[lastIndex],
+            message: updated[lastIndex].message + chunk,
+            streaming: true,
+          };
 
-      setMessages((prev) => [...prev, botMessage]);
+          return updated;
+        });
+
+        if (autoSmartScroll) {
+          requestAnimationFrame(() => {
+            scrollToBottom("auto");
+          });
+        }
+      });
+
+      setMessages((prev) => {
+        const updated = [...prev];
+
+        updated[updated.length - 1] = {
+          ...updated[updated.length - 1],
+          streaming: false,
+        };
+
+        return updated;
+      });
     } catch (error) {
       console.error(error);
 
-      setMessages((prev) => [
-        ...prev,
-        {
+      setMessages((prev) => {
+        const updated = [...prev];
+
+        updated[updated.length - 1] = {
           message: "Terjadi kesalahan.",
           isUser: false,
-        },
-      ]);
+          streaming: false,
+        };
+
+        return updated;
+      });
     } finally {
-      setLoading(false);
+      setStreaming(false);
     }
   };
 
@@ -72,23 +153,33 @@ export default function ChatPage() {
           <EmptyState />
         </div>
       ) : (
-        <div className="flex-1 overflow-y-auto">
+        <div
+          ref={chatContainerRef}
+          onScroll={handleScroll}
+          className="flex-1 overflow-y-auto"
+        >
           <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-48">
-            {messages.map((chat, index) => (
-              <ChatBubble
-                key={index}
-                message={chat.message}
-                isUser={chat.isUser}
-                attachment={chat.attachment}
-              />
-            ))}
+            {messages.map((chat, index) => {
+              const isLastUserMessage =
+                chat.isUser &&
+                index === messages.map((m) => m.isUser).lastIndexOf(true);
 
-            {loading && (
-              <div className="flex items-center gap-3">
-                <Loading />
-                <span>DevMate AI sedang berpikir...</span>
-              </div>
-            )}
+              return (
+                <div
+                  key={index}
+                  ref={isLastUserMessage ? lastUserMessageRef : null}
+                >
+                  <ChatBubble
+                    message={chat.message}
+                    isUser={chat.isUser}
+                    attachment={chat.attachment}
+                    streaming={chat.streaming}
+                  />
+                </div>
+              );
+            })}
+
+            {streaming && <div className="h-[450px]" />}
 
             <div ref={bottomRef} />
           </div>

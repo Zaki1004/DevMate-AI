@@ -1,9 +1,10 @@
 import groq from "../utils/groq";
 import { ChatRequest, ChatResponse } from "../types/chat";
+import { Response } from "express";
 
-export const generateResponse = async (
-  request: ChatRequest
-): Promise<ChatResponse> => {
+export async function* generateStreamResponse(
+  request: ChatRequest,
+) {
   console.log("Request received:", request);
 
   const userPrompt = request.sourceCode?.trim()
@@ -30,6 +31,7 @@ Berikan seluruh jawaban menggunakan Markdown yang valid sesuai format yang telah
   const completion =
     await groq.chat.completions.create({
       model: "llama-3.3-70b-versatile",
+      stream: true,
 
       messages: [
         {
@@ -185,11 +187,14 @@ Gunakan Markdown yang valid agar dapat dirender oleh ReactMarkdown.
       ],
     });
 
-    const answer = completion.choices[0].message.content ?? "";
+  for await (const chunk of completion) {
+    const token =
+      chunk.choices[0]?.delta?.content ?? "";
 
-console.log(answer);
+   if (!token) continue;
+   
+   console.log(token);
 
-  return {
-    answer
-  };
+    yield token;
+  }
 };
