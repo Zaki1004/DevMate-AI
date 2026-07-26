@@ -1,9 +1,10 @@
-import api from "./api";
+const API_URL = "http://localhost:5000/api/chat";
 
-export const sendMessage = async (
+export const streamMessage = async (
   message: string,
   sourceCode?: string,
-  image?: File
+  image?: File,
+  onChunk?: (chunk: string) => void,
 ) => {
   const formData = new FormData();
 
@@ -17,16 +18,32 @@ export const sendMessage = async (
     formData.append("image", image);
   }
 
-  const response = await api.post(
-    "/chat",
-    formData,
-    {
-      headers: {
-        "Content-Type":
-          "multipart/form-data",
-      },
-    }
-  );
+  const response = await fetch(API_URL, {
+    method: "POST",
+    body: formData,
+  });
 
-  return response.data;
+  if (!response.ok) {
+    throw new Error("Gagal menghubungi server.");
+  }
+
+  if (!response.body) {
+    throw new Error("Streaming tidak tersedia.");
+  }
+
+  const reader = response.body.getReader();
+
+  const decoder = new TextDecoder();
+
+  while (true) {
+    const { done, value } = await reader.read();
+
+    if (done) break;
+
+    const chunk = decoder.decode(value, {
+      stream: true,
+    });
+
+    onChunk?.(chunk);
+  }
 };

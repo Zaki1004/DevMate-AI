@@ -1,39 +1,51 @@
 import { Request, Response } from "express";
-import { generateResponse } from "../services/chat.service";
+
+import { generateStreamResponse } from "../services/chat.service";
 
 export const chatController = async (
   req: Request,
-  res: Response
+  res: Response,
 ) => {
   try {
     const { message, sourceCode } = req.body;
-
     const image = req.file;
 
     console.log("Message:", message);
     console.log("Source Code:", sourceCode);
     console.log("Image:", image);
 
-    const response = await generateResponse({ message, sourceCode, image });
+    /**
+     * HTTP Streaming Header
+     */
+    res.setHeader("Content-Type", "text/plain; charset=utf-8");
+    res.setHeader("Transfer-Encoding", "chunked");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
 
-    return res.status(200).json({
-      ...response,
+    res.flushHeaders();
 
-      uploadedImage: image
-        ? {
-            filename: image.filename,
-            originalName: image.originalname,
-            mimetype: image.mimetype,
-            size: image.size,
-          }
-        : null,
+    /**
+     * Stream token dari Groq
+     */
+    const stream = generateStreamResponse({
+      message,
+      sourceCode,
+      image,
     });
 
+    for await (const token of stream) {
+      console.log("SEND :", token)
+      res.write(token);
+    }
+
+    res.end();
   } catch (error) {
     console.error(error);
 
-    return res.status(500).json({
-      message: "Internal Server Error",
-    });
+    if (!res.headersSent) {
+      res.status(500).send("Internal Server Error");
+    } else {
+      res.end();
+    }
   }
 };
