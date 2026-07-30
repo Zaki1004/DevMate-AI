@@ -1,4 +1,6 @@
 export interface Message {
+  id: string;
+  createdAt: string;
   message: string;
   isUser: boolean;
   streaming?: boolean;
