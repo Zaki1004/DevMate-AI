@@ -1,7 +1,7 @@
 import { Message } from "@/types/chat";
 import { Conversation } from "@/types/conversation";
 
-const STORAGE_VERSION = "v1";
+const STORAGE_VERSION = "v1.1";
 const STORAGE_KEY = `devmate-conversations-${STORAGE_VERSION}`;
 const ACTIVE_STORAGE_KEY = `devmate-active-conversation-${STORAGE_VERSION}`;
 
@@ -38,6 +38,8 @@ const isValidConversation = (value: unknown): value is Conversation => {
   return (
     typeof conversation.id === "string" &&
     typeof conversation.title === "string" &&
+    typeof conversation.isAutoTitle === "boolean" &&
+    typeof conversation.isManuallyRenamed === "boolean" &&
     typeof conversation.createdAt === "string" &&
     typeof conversation.updatedAt === "string" &&
     Array.isArray(conversation.messages) &&

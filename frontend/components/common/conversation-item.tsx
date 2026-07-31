@@ -76,7 +76,7 @@ const ConversationItem = ({
     >
       <Button
         onClick={onSelect}
-        className="flex h-auto flex-1 flex-col items-start gap-1 px-3 py-2 text-left"
+        className="flex h-auto flex-1 min-w-0 flex-col items-start gap-1 px-3 py-2 text-left"
       >
         {isEditing ? (
           <Input
@@ -93,10 +93,12 @@ const ConversationItem = ({
                 handleCancel();
               }
             }}
-            className="w-full rounded-md border bg-background px-2 text-black py-1 text-sm outline-none ring-0 focus:border-primary"
+            className="w-full min-w-0 rounded-md border bg-background px-2 py-1 text-sm text-black outline-none ring-0 focus:border-primary"
           />
         ) : (
-          <p className="truncate text-sm font-medium">{conversation.title}</p>
+          <div className="w-full min-w-0">
+            <p className="truncate text-sm font-medium">{conversation.title}</p>
+          </div>
         )}
 
         <p className="text-xs text-muted-foreground">
@@ -104,10 +106,12 @@ const ConversationItem = ({
         </p>
       </Button>
 
-      <ConversationMenu
-        onRename={() => setIsEditing(true)}
-        onDelete={onDelete}
-      />
+      <div className="shrink-0">
+        <ConversationMenu
+          onRename={() => setIsEditing(true)}
+          onDelete={onDelete}
+        />
+      </div>
     </div>
   );
 };

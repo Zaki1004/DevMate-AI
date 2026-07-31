@@ -6,4 +6,6 @@ export interface Conversation {
   createdAt: string;
   updatedAt: string;
   messages: Message[];
+  isAutoTitle: boolean;
+  isManuallyRenamed: boolean;
 }

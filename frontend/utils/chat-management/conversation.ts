@@ -8,6 +8,8 @@ export const createConversation =
     messages: [],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
+    isAutoTitle: true,
+    isManuallyRenamed: false
   });
 
 
@@ -23,7 +25,9 @@ export const renameConversation = (
   title: string,
 ): Conversation => ({
   ...conversation,
-  title,
+  title,  
+  isAutoTitle: false,
+  isManuallyRenamed: true,
   updatedAt: new Date().toISOString(),
 });
 
