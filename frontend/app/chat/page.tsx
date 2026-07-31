@@ -26,6 +26,7 @@ import {
   saveConversations,
 } from "@/utils/chat-management/conversation-storage";
 import Swal from "sweetalert2";
+import { generateConversationTitle } from "@/utils/chat-management/auto-title-generator";
 
 export default function ChatPage() {
   const {
@@ -221,6 +222,8 @@ export default function ChatPage() {
         }
       });
 
+      // MULAI STREMING CHAT MESSAGE
+
       setConversations((prev) =>
         prev.map((conversation) => {
           if (conversation.id !== activeConversationId) return conversation;
@@ -237,6 +240,26 @@ export default function ChatPage() {
             // updatedAt: new Date().toISOString(),
             messages: updatedMessages,
           });
+        }),
+      );
+
+      // AUTO TITLE GENERATION KETIKA STREAMING MESSAGE SUDAH SELESAI
+
+      setConversations((previous) =>
+        previous.map((conversation) => {
+          if (conversation.id !== activeConversationId) {
+            return conversation;
+          }
+
+          if (!conversation.isAutoTitle) {
+            return conversation;
+          }
+
+          return {
+            ...conversation,
+            title: generateConversationTitle(message),
+            isAutoTitle: false,
+          };
         }),
       );
     } catch (error) {
