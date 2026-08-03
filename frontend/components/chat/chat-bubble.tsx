@@ -269,7 +269,7 @@ sm:prose-h3:text-xl
 
                 if (!match) {
                   return (
-                    <code className="rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-[13px] text-pink-600">
+                    <code className="rounded-md bg-zinc-100 px-1.5 font-mono py-0.5 font-mono text-[13px] text-pink-600">
                       {children}
                     </code>
                   );
