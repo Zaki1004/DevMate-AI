@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 const HeroSection = () => {
   return (
-    <section className="flex min-h-screen items-center justify-center px-6">
+    <section className="flex h-[calc(100vh-4rem)] items-center justify-center overflow-hidden">
       <div className="max-w-3xl text-center">
         <p className="mb-4 text-lg font-medium text-muted-foreground">
           🚀 Powered your code

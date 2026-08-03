@@ -2,20 +2,32 @@ import { Attachment } from "@/types/chat";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import CodeBlock from "@/components/code/code-block";
+import { ChevronDown, ChevronUp, CodeXml } from "lucide-react";
+import { useState } from "react";
+import { Button } from "../ui/button";
+import ResponseActions from "./response-action";
 
 type ChatBubbleProps = {
   message: string;
   isUser: boolean;
   streaming?: boolean;
   attachment?: Attachment;
+  codeName?: string;
+  sourceCode?: string;
+  onCopy?: () => void | Promise<void>;
 };
 
 const ChatBubble = ({
   message,
   isUser,
   attachment,
+  codeName,
   streaming,
+  sourceCode,
+  onCopy,
 }: ChatBubbleProps) => {
+  const [showCodeInput, setShowCodeInput] = useState(false);
+
   return (
     <div
       className={`flex w-full ${
@@ -23,7 +35,11 @@ const ChatBubble = ({
       } animate-in fade-in duration-300`}
     >
       <div
-        className={`my-2 max-w-[92%] sm:max-w-[85%] lg:max-w-[75%] overflow-hidden break-words rounded-3xl px-2 py-2 shadow-sm hover:shadow-md transition-all duration-200
+        className={`mt-2 mb-24 sm:mb-20 max-w-[95%]
+sm:max-w-[90%]
+md:max-w-[82%]
+lg:max-w-[75%]
+xl:max-w-[70%] overflow-hidden break-words rounded-3xl px-3 py-3 sm:px-4 sm:py-3 shadow-sm hover:shadow-md transition-all duration-200
     ${
       isUser
         ? "bg-gray-200 text-black"
@@ -36,29 +52,99 @@ const ChatBubble = ({
             <img
               src={attachment.preview}
               alt={attachment.name}
-              className="max-h-72 w-full rounded-2xl object-cover shadow-sm"
+              className="w-full
+max-h-52
+md:max-h-64
+lg:max-h-80
+rounded-2xl
+object-contain
+bg-zinc-100"
             />
 
             <p
-              className={`mt-3 text-xs ${
-                isUser ? "text-zinc-300" : "text-zinc-500"
+              className={`mt-3 pl-2 text-lg text-black ${
+                isUser ? "text-black" : "text-zinc-500"
               }`}
             >
               {attachment.name}
             </p>
           </div>
         )}
+
+        {codeName && (
+          <button
+            onClick={() => setShowCodeInput(true)}
+            className="
+        mb-3
+        flex
+        items-center
+        gap-3
+        rounded-xl
+        border
+        border-zinc-200
+        bg-zinc-50
+        px-4
+        py-3
+        transition
+        hover:bg-zinc-100
+    "
+          >
+            <CodeXml className="h-5 w-5 text-zinc-500" />
+
+            <div className="text-left">
+              <p className="text-sm font-medium">{codeName}</p>
+
+              <p className="text-xs text-zinc-500">
+                {sourceCode?.split("\n").length} lines
+              </p>
+            </div>
+          </button>
+        )}
+
+        {showCodeInput && sourceCode && (
+          <div className="mb-4 overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-md">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-zinc-200 px-4 py-3">
+              <div>
+                <p className="text-sm font-semibold">{codeName}</p>
+
+                <p className="text-xs text-zinc-500">
+                  {sourceCode.split("\n").length} lines
+                </p>
+              </div>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowCodeInput(false)}
+              >
+                Batal
+              </Button>
+            </div>
+
+            {/* Code */}
+            <div className="max-h-[380px] overflow-y-auto">
+              <CodeBlock language="tsx" value={sourceCode} />
+            </div>
+          </div>
+        )}
         <div
           className="    prose-zinc py-2 px-4
+          text-lg
     prose-sm
     max-w-none
 
     prose-headings:font-bold
     prose-headings:text-zinc-900
 
-    prose-h1:text-3xl
-    prose-h2:text-2xl
-    prose-h3:text-xl
+prose-h1:text-2xl
+sm:prose-h1:text-3xl
+
+prose-h2:text-xl
+sm:prose-h2:text-2xl
+
+prose-h3:text-lg
+sm:prose-h3:text-xl
 
     prose-p:leading-8
 
@@ -90,7 +176,7 @@ const ChatBubble = ({
     prose-hr:my-8
 
     prose-code:rounded
-    prose-code:bg-zinc-100
+
     prose-code:px-1.5
     prose-code:py-0.5
     prose-code:font-mono
@@ -142,7 +228,7 @@ const ChatBubble = ({
               hr: () => <hr className="my-6 border-zinc-200" />,
 
               table: ({ children }) => (
-                <div className="my-5 overflow-x-auto">
+                <div className="my-5 overflow-x-auto rounded-lg">
                   <table className="min-w-full border border-zinc-200">
                     {children}
                   </table>
@@ -200,6 +286,10 @@ const ChatBubble = ({
           >
             {message}
           </ReactMarkdown>
+
+          {!streaming && onCopy && (
+            <ResponseActions onCopy={onCopy ?? (() => {})} />
+          )}
 
           {streaming && !isUser && (
             <span

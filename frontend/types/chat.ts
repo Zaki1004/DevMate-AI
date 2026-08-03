@@ -5,6 +5,7 @@ export interface Message {
   isUser: boolean;
   streaming?: boolean;
   sourceCode?: string;
+  codeName?: string;
   attachment?: Attachment;
 }
 
