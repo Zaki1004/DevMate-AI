@@ -127,7 +127,7 @@ const ConversationItem = ({
                 <p
                   className={cn(
                     "truncate text-sm transition-colors duration-300 ease-in-out",
-                    isActive ? "font-bold text-white text-lg" : "text-white",
+                    isActive ? "font-bold text-white text-md" : "text-white",
                   )}
                 >
                   {conversation.title}

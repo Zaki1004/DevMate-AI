@@ -80,7 +80,7 @@ const CodeBlock = ({ language, value }: CodeBlockProps) => {
           }}
           codeTagProps={{
             style: {
-              fontFamily: "var(--font-geist-mono)",
+              fontFamily: "var(--font-mono)",
             },
           }}
         >
