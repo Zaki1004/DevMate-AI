@@ -10,6 +10,7 @@ import { SelectedImage } from "../../types/vision";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import CodePreview from "../code/code-priview";
 
 type ChatInputProps = {
   onSend: (message: string, image?: File, sourceCode?: string) => void;
@@ -24,9 +25,24 @@ const ChatInput = ({ onSend }: ChatInputProps) => {
   const [sourceCode, setSourceCode] = useState("");
 
   const inputFileRef = useRef<HTMLInputElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleSubmit = () => {
-    if (!message.trim() && !selectedImage) return;
+    if (!message.trim() && !selectedImage && !sourceCode.trim()) {
+      return;
+    }
 
     onSend(message, selectedImage?.file, sourceCode);
 
@@ -55,6 +71,11 @@ const ChatInput = ({ onSend }: ChatInputProps) => {
     setSelectedImage(null);
   };
 
+  const handleRemoveCode = () => {
+    setSourceCode("");
+    setShowCodeInput(false);
+  };
+
   const openFilePicker = () => {
     inputFileRef.current?.click();
   };
@@ -68,7 +89,22 @@ const ChatInput = ({ onSend }: ChatInputProps) => {
   }, [selectedImage]);
 
   return (
-    <div className="fixed bottom-6 left-1/2 z-50 w-full max-w-4xl -translate-x-1/2 px-3 sm:px-4">
+    <div
+      className={`
+    fixed
+    left-1/2
+    z-50
+    -translate-x-1/2
+    transition-all
+    duration-300
+
+    ${
+      isMobile
+        ? "bottom-4 w-[96%] max-w-none px-2"
+        : "bottom-6 w-full max-w-4xl px-4"
+    }
+  `}
+    >
       <div className="mx-auto w-full max-w-4xl">
         {/* Image Preview */}
         {selectedImage && (
@@ -80,15 +116,28 @@ const ChatInput = ({ onSend }: ChatInputProps) => {
           </div>
         )}
 
+        {/* Code Preview */}
+
+        {sourceCode.trim() && (
+          <CodePreview sourceCode={sourceCode} onRemove={handleRemoveCode} />
+        )}
+
         {/* Code Input */}
         {showCodeInput && (
           <CodeInput value={sourceCode} onChange={setSourceCode} />
         )}
 
-        <div className="rounded-xl p-2 border border-zinc-200 bg-white/95 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 focus-within:shadow-[0_12px_40px_rgb(0,0,0,0.12)]">
+        <div
+          className={`rounded-xl border border-zinc-200 bg-white/95 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 focus-within:shadow-[0_12px_40px_rgb(0,0,0,0.12)] ${isMobile ? "p-1.5" : "p-2"}`}
+        >
           <div className="flex items-center gap-3">
             <Input
-              className="h-10 sm:h-11 text-sm sm:text-base"
+              className={`
+border-0
+shadow-none
+
+${isMobile ? "h-9 text-sm" : "h-11 text-base"}
+`}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Ask About React, Next.js, TypeScript, Tailwind CSS..."

@@ -27,6 +27,10 @@ import {
 } from "@/utils/chat-management/conversation-storage";
 import Swal from "sweetalert2";
 import { generateConversationTitle } from "@/utils/chat-management/auto-title-generator";
+import { Button } from "@/components/ui/button";
+import { ArrowDown, Menu } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { fileToBase64 } from "@/utils/image/file-to-base64";
 
 export default function ChatPage() {
   const {
@@ -38,10 +42,51 @@ export default function ChatPage() {
 
   const [streaming, setStreaming] = useState(false);
   const [autoSmartScroll, setAutoSmartScroll] = useState(true);
+  const [showScrollToButton, setShowScrollToButton] = useState(false);
+  const [collapsedSidebar, setCollapsedSidebar] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const lastUserMessageRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+
+      const mobile = width < 768;
+      const tablet = width >= 768 && width < 1024;
+
+      setIsMobile(mobile);
+      setIsTablet(tablet);
+
+      // Mobile
+      if (mobile) {
+        setSidebarOpen(false);
+        setCollapsedSidebar(false);
+        return;
+      }
+
+      // Tablet
+      if (tablet) {
+        setSidebarOpen(true);
+        setCollapsedSidebar(true);
+        return;
+      }
+
+      // Desktop
+      setSidebarOpen(true);
+      setCollapsedSidebar(false);
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   /**
    * =====================================================
@@ -103,7 +148,9 @@ export default function ChatPage() {
     const distance =
       container.scrollHeight - container.scrollTop - container.clientHeight;
 
-    setAutoSmartScroll(distance < 300);
+    const nearBottom = distance < 300;
+    setAutoSmartScroll(nearBottom);
+    setShowScrollToButton(!nearBottom);
   };
 
   const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
@@ -146,18 +193,23 @@ export default function ChatPage() {
   ) => {
     if (!activeConversation) return;
 
+    let attachment;
+
+    if (image) {
+      attachment = {
+        name: image.name,
+        preview: await fileToBase64(image),
+      };
+    }
+
     const userMessage: Message = {
       id: generateId(),
       message,
       isUser: true,
       sourceCode,
       createdAt: new Date().toISOString(),
-      attachment: image
-        ? {
-            name: image.name,
-            preview: URL.createObjectURL(image),
-          }
-        : undefined,
+      codeName: sourceCode?.trim() ? "Code Snippet" : undefined,
+      attachment,
     };
 
     const aiMessage: Message = {
@@ -350,6 +402,10 @@ export default function ChatPage() {
 
     setActiveConversationId(conversation.id);
 
+    if (isMobile) {
+      setSidebarOpen(false);
+    }
+
     requestAnimationFrame(() => {
       chatContainerRef.current?.scrollTo({
         top: 0,
@@ -360,6 +416,9 @@ export default function ChatPage() {
 
   const handleSelectConversation = (id: string) => {
     setActiveConversationId(id);
+    if (isMobile) {
+      setSidebarOpen(false);
+    }
   };
 
   // RENAME CONVERSATION
@@ -442,7 +501,13 @@ export default function ChatPage() {
    */
 
   return (
-    <div className="flex h-full overflow-hidden bg-[#fafafa]">
+    <div className="flex h-screen overflow-hidden bg-[#fafafa]">
+      {isMobile && sidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[2px]"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
       {/* Sidebar */}
       <ConversationSidebar
         conversations={conversations}
@@ -451,24 +516,52 @@ export default function ChatPage() {
         onCreate={handleCreateConversation}
         onRename={handleRenameConversation}
         onDelete={handleDeleteConversation}
+        collapsed={collapsedSidebar}
+        onToggleCollapse={() => setCollapsedSidebar((prev) => !prev)}
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+        isMobile={isMobile}
+        isTablet={isTablet}
       />
 
+      {isMobile && !sidebarOpen && (
+        <header className="flex h-14 items-center px-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setSidebarOpen(true)}
+          >
+            <Menu size={20} />
+          </Button>
+        </header>
+      )}
+
       {/* Chat Area */}
-      <main className="flex flex-1 flex-col overflow-hidden">
+      <main
+        className={cn(
+          "flex flex-1 flex-col overflow-hidden transition-transform duration-300",
+          isMobile && sidebarOpen && "hidden",
+          // (!isMobile || !sidebarOpen) && "flex",
+        )}
+      >
         {messages.length === 0 ? (
           <>
-            <div className="flex flex-1 items-center justify-center px-6">
-              <EmptyState />
-            </div>
+            <div className="flex flex-1 flex-col overflow-hidden">
+              <div className="flex flex-1 items-center justify-center px-6">
+                <EmptyState />
+              </div>
 
-            <ChatInput onSend={handleSend} />
+              <ChatInput onSend={handleSend} />
+            </div>
           </>
         ) : (
           <>
             <div
               ref={chatContainerRef}
               onScroll={handleScroll}
-              className="flex-1 overflow-y-auto"
+              className={`flex-1 ${
+                messages.length === 0 ? "overflow-hidden" : "overflow-y-auto"
+              }`}
             >
               <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-4 py-6 pb-48 sm:px-6 sm:py-8 lg:px-8">
                 {messages.map((chat, index) => {
@@ -486,6 +579,11 @@ export default function ChatPage() {
                         isUser={chat.isUser}
                         attachment={chat.attachment}
                         streaming={chat.streaming}
+                        codeName={chat.codeName}
+                        sourceCode={chat.sourceCode}
+                        onCopy={async () => {
+                          await navigator.clipboard.writeText(chat.message);
+                        }}
                       />
                     </div>
                   );
@@ -498,6 +596,20 @@ export default function ChatPage() {
             </div>
 
             <ChatInput onSend={handleSend} />
+
+            {showScrollToButton && (
+              <div className="fixed bottom-32 left-1/2 z-40 w-full max-w-4xl -translate-x-1/2 px-4">
+                <div className="flex justify-center">
+                  <Button
+                    size="icon"
+                    className="rounded-full shadow-lg cursor-pointer"
+                    onClick={() => scrollToBottom()}
+                  >
+                    <ArrowDown size={18} />
+                  </Button>
+                </div>
+              </div>
+            )}
           </>
         )}
       </main>

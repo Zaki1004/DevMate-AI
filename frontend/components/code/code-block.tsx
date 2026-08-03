@@ -75,7 +75,7 @@ const CodeBlock = ({ language, value }: CodeBlockProps) => {
             margin: 0,
             padding: "18px",
             borderRadius: 0,
-            background: "transparent",
+            background: "#0d1117",
             fontSize: "14px",
           }}
           codeTagProps={{
