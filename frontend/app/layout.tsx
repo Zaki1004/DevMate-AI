@@ -18,6 +18,35 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "DevMate AI",
   description: "AI Assistant for Frontend Developers.",
+  keywords: [
+    "DevMate AI",
+    "AI Assistant",
+    "AI Developer Assistant",
+    "Frontend Developer",
+    "Code Assistant",
+    "Next.js",
+    "TypeScript",
+  ],
+
+  authors: [
+    {
+      name: "Zaki Waliyan Isnanto",
+    },
+  ],
+
+  applicationName: "DevMate AI",
+
+  robots: {
+    index: true,
+    follow: true,
+  },
+
+  openGraph: {
+    title: "DevMate AI",
+    description: "AI Assistant for Frontend Developers.",
+    type: "website",
+    siteName: "DevMate AI",
+  },
 };
 
 export default function RootLayout({
