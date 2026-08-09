@@ -1,11 +1,11 @@
 "use client";
 
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { useCallback, useState } from "react";
-import { Check, Copy } from "lucide-react";
-import { syntaxTheme } from "./syntax-themes";
-import { Button } from "../ui/button";
 import { detectLanguage } from "@/utils/detect-language/index";
+import { Check, Copy } from "lucide-react";
+import { useCallback, useState } from "react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { Button } from "../ui/button";
+import { syntaxTheme } from "./syntax-themes";
 
 type CodeBlockProps = {
   language?: string;
@@ -14,14 +14,11 @@ type CodeBlockProps = {
 
 const CodeBlock = ({ language, value }: CodeBlockProps) => {
   const [copied, setCopied] = useState(false);
-  const displayLanguage =
-    language === "text" ? "Plain Text" : language?.toUpperCase();
 
   const handleCopy = useCallback(async () => {
     await navigator.clipboard.writeText(value);
 
     setCopied(true);
-
     setTimeout(() => {
       setCopied(false);
     }, 2000);

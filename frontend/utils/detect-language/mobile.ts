@@ -1,11 +1,7 @@
 import { LanguageRule } from "./types";
 
 export const mobileRules: LanguageRule[] = [
-  /**
-   * ===========================
-   * Dart
-   * ===========================
-   */
+  // Dart
 
   {
     language: "dart",
@@ -17,11 +13,7 @@ export const mobileRules: LanguageRule[] = [
     patterns: [/import 'package:/i],
   },
 
-  /**
-   * ===========================
-   * Flutter
-   * ===========================
-   */
+  // Flutter
 
   {
     language: "flutter",
@@ -48,11 +40,7 @@ export const mobileRules: LanguageRule[] = [
     patterns: [/BuildContext/i],
   },
 
-  /**
-   * ===========================
-   * React Native
-   * ===========================
-   */
+  // React Native
 
   {
     language: "react-native",
@@ -74,11 +62,7 @@ export const mobileRules: LanguageRule[] = [
     patterns: [/TouchableOpacity/i],
   },
 
-  /**
-   * ===========================
-   * Kotlin
-   * ===========================
-   */
+// Kotlin
 
   {
     language: "kotlin",
@@ -95,11 +79,7 @@ export const mobileRules: LanguageRule[] = [
     patterns: [/val /i],
   },
 
-  /**
-   * ===========================
-   * Swift
-   * ===========================
-   */
+  // Swift
 
   {
     language: "swift",

@@ -1,8 +1,8 @@
-import { Conversation } from "@/types/conversation";
-import ConversationItem from "./conversation-item";
 import { cn } from "@/lib/utils";
-import { Button } from "../ui/button";
+import { Conversation } from "@/types/conversation";
 import { Menu, Plus } from "lucide-react";
+import { Button } from "../ui/button";
+import ConversationItem from "./conversation-item";
 
 type Props = {
   conversations: Conversation[];
@@ -16,7 +16,6 @@ type Props = {
   sidebarOpen?: boolean;
   setSidebarOpen?: (open: boolean) => void;
   isMobile?: boolean;
-  isTablet?: boolean;
 };
 
 const Sidebar = ({
@@ -31,7 +30,6 @@ const Sidebar = ({
   sidebarOpen,
   setSidebarOpen,
   isMobile,
-  isTablet,
 }: Props) => {
   const sortedConversations = [...conversations].sort(
     (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),

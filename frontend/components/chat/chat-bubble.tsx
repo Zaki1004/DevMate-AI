@@ -1,9 +1,9 @@
+import CodeBlock from "@/components/code/code-block";
 import { Attachment } from "@/types/chat";
+import { CodeXml } from "lucide-react";
+import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import CodeBlock from "@/components/code/code-block";
-import { ChevronDown, ChevronUp, CodeXml } from "lucide-react";
-import { useState } from "react";
 import { Button } from "../ui/button";
 import ResponseActions from "./response-action";
 
@@ -35,11 +35,7 @@ const ChatBubble = ({
       } animate-in fade-in duration-300`}
     >
       <div
-        className={`mt-2 mb-24 sm:mb-20 max-w-[95%]
-sm:max-w-[90%]
-md:max-w-[82%]
-lg:max-w-[75%]
-xl:max-w-[70%] overflow-hidden break-words rounded-3xl px-3 py-3 sm:px-4 sm:py-3 shadow-sm hover:shadow-md transition-all duration-200
+        className={`mt-2 mb-24 sm:mb-20 max-w-[95%] sm:max-w-[90%] md:max-w-[82%] lg:max-w-[75%] xl:max-w-[70%] overflow-hidden break-words rounded-3xl px-3 py-3 sm:px-4 sm:py-3 shadow-sm hover:shadow-md transition-all duration-200
     ${
       isUser
         ? "bg-gray-200 text-black"
@@ -52,13 +48,7 @@ xl:max-w-[70%] overflow-hidden break-words rounded-3xl px-3 py-3 sm:px-4 sm:py-3
             <img
               src={attachment.preview}
               alt={attachment.name}
-              className="w-full
-max-h-52
-md:max-h-64
-lg:max-h-80
-rounded-2xl
-object-contain
-bg-zinc-100"
+              className="w-full max-h-52 md:max-h-64 lg:max-h-80 rounded-2xl object-contain bg-zinc-100"
             />
 
             <p
@@ -74,26 +64,12 @@ bg-zinc-100"
         {codeName && (
           <button
             onClick={() => setShowCodeInput(true)}
-            className="
-        mb-3
-        flex
-        items-center
-        gap-3
-        rounded-xl
-        border
-        border-zinc-200
-        bg-zinc-50
-        px-4
-        py-3
-        transition
-        hover:bg-zinc-100
-    "
+            className="mb-3 flex items-center gap-3 rounded-xl border  border-zinc-200 bg-zinc-50 px-4 py-3 transition hover:bg-zinc-100"
           >
             <CodeXml className="h-5 w-5 text-zinc-500" />
 
             <div className="text-left">
               <p className="text-sm font-medium">{codeName}</p>
-
               <p className="text-xs text-zinc-500">
                 {sourceCode?.split("\n").length} lines
               </p>
@@ -128,62 +104,7 @@ bg-zinc-100"
             </div>
           </div>
         )}
-        <div
-          className="    prose-zinc py-2 px-4
-          text-lg
-    prose-sm
-    max-w-none
-
-    prose-headings:font-bold
-    prose-headings:text-zinc-900
-
-prose-h1:text-2xl
-sm:prose-h1:text-3xl
-
-prose-h2:text-xl
-sm:prose-h2:text-2xl
-
-prose-h3:text-lg
-sm:prose-h3:text-xl
-
-    prose-p:leading-8
-
-    prose-ul:list-disc
-    prose-ol:list-decimal
-
-    prose-li:my-1
-    prose-li:marker:text-zinc-500
-
-    prose-blockquote:border-l-4
-    prose-blockquote:border-zinc-300
-    prose-blockquote:pl-4
-    prose-blockquote:italic
-
-    prose-table:w-full
-    prose-table:border-collapse
-
-    prose-th:border
-    prose-th:bg-zinc-100
-    prose-th:p-2
-
-    prose-td:border
-    prose-td:p-2
-
-    prose-a:text-blue-600
-    prose-a:no-underline
-    hover:prose-a:underline
-
-    prose-hr:my-8
-
-    prose-code:rounded
-
-    prose-code:px-1.5
-    prose-code:py-0.5
-    prose-code:font-mono
-    prose-code:text-red-600
-
-    dark:prose-invert"
-        >
+        <div className="prose-zinc py-2 px-4 text-lg prose-sm max-w-none prose-headings:font-bold prose-headings:text-zinc-900 prose-h1:text-2xl sm:prose-h1:text-3xl prose-h2:text-xl sm:prose-h2:text-2xl prose-h3:text-lg sm:prose-h3:text-xl prose-p:leading-8 prose-ul:list-disc prose-ol:list-decimal prose-li:my-1 prose-li:marker:text-zinc-500 prose-blockquote:border-l-4 prose-blockquote:border-zinc-300 prose-blockquote:pl-4 prose-blockquote:italic prose-table:w-full prose-table:border-collapse prose-th:border prose-th:bg-zinc-100 prose-th:p-2 prose-td:border prose-td:p-2 prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline prose-hr:my-8 prose-code:rounded prose-code:px-1.5 prose-code:py-0.5 prose-code:font-mono prose-code:text-red-600 dark:prose-invert">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             components={{
@@ -292,15 +213,7 @@ sm:prose-h3:text-xl
           )}
 
           {streaming && !isUser && (
-            <span
-              className="
-      ml-1
-      inline-block
-      animate-pulse
-      font-bold
-      text-zinc-500
-    "
-            >
+            <span className="ml-1 inline-block animate-pulse font-bold text-zinc-500">
               ▍
             </span>
           )}

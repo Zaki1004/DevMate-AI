@@ -1,7 +1,7 @@
 import { DetectionResult } from "@/types/language";
 import { calculateScores } from "./scoring";
 import {
-    ProgrammingLanguage
+  ProgrammingLanguage
 } from "./types";
 
 

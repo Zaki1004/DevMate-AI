@@ -1,11 +1,9 @@
+import { ChatRequest } from "../types/chat";
 import groq from "../utils/groq";
-import { ChatRequest, ChatResponse } from "../types/chat";
-import { Response } from "express";
 
 export async function* generateStreamResponse(
   request: ChatRequest,
 ) {
-  console.log("Request received:", request);
 
   const userPrompt = request.sourceCode?.trim()
   ? `
@@ -192,8 +190,6 @@ Gunakan Markdown yang valid agar dapat dirender oleh ReactMarkdown.
       chunk.choices[0]?.delta?.content ?? "";
 
    if (!token) continue;
-   
-   console.log(token);
 
     yield token;
   }

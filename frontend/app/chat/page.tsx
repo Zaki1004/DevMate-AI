@@ -10,27 +10,27 @@ import { streamMessage } from "@/services/chat-service";
 
 import { Message } from "@/types/chat";
 
+import ConversationSidebar from "@/components/common/sidebar";
+import { Button } from "@/components/ui/button";
 import { useConversation } from "@/hooks/useConversation";
+import { cn } from "@/lib/utils";
+import { generateConversationTitle } from "@/utils/chat-management/auto-title-generator";
 import {
   createConversation,
   deleteConversation,
   renameConversation,
   updateConversationTimestamp,
 } from "@/utils/chat-management/conversation";
-import { generateId } from "@/utils/chat-management/uuid";
-import ConversationSidebar from "@/components/common/sidebar";
 import {
   loadActiveConversation,
   loadConversations,
   saveActiveConversation,
   saveConversations,
 } from "@/utils/chat-management/conversation-storage";
-import Swal from "sweetalert2";
-import { generateConversationTitle } from "@/utils/chat-management/auto-title-generator";
-import { Button } from "@/components/ui/button";
-import { ArrowDown, Menu } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { generateId } from "@/utils/chat-management/uuid";
 import { fileToBase64 } from "@/utils/image/file-to-base64";
+import { ArrowDown, Menu } from "lucide-react";
+import Swal from "sweetalert2";
 
 export default function ChatPage() {
   const {
@@ -88,11 +88,7 @@ export default function ChatPage() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  /**
-   * =====================================================
-   * Create First Conversation + Restore Conversation
-   * =====================================================
-   */
+  // Create First Conversation + Restore Conversation
 
   useEffect(() => {
     const storedConversations = loadConversations();
@@ -117,15 +113,10 @@ export default function ChatPage() {
     const conversation = createConversation();
 
     setConversations([conversation]);
-
     setActiveConversationId(conversation.id);
   }, []);
 
-  /**
-   * =====================================================
-   * Active Conversation
-   * =====================================================
-   */
+  //  Active Conversation
 
   const activeConversation =
     conversations.find(
@@ -134,11 +125,7 @@ export default function ChatPage() {
 
   const messages = activeConversation?.messages ?? [];
 
-  /**
-   * =====================================================
-   * Smart Scroll
-   * =====================================================
-   */
+  //  Smart Scroll
 
   const handleScroll = () => {
     if (!chatContainerRef.current) return;
@@ -180,11 +167,7 @@ export default function ChatPage() {
     scrollToBottom("smooth");
   }, [messages, autoSmartScroll]);
 
-  /**
-   * =====================================================
-   * Send Message
-   * =====================================================
-   */
+  //  Send Message
 
   const handleSend = async (
     message: string,
@@ -223,9 +206,7 @@ export default function ChatPage() {
     setStreaming(true);
     setAutoSmartScroll(true);
 
-    /**
-     * Add User + AI Bubble
-     */
+    //  Add User + AI Bubble
 
     setConversations((prev) =>
       prev.map((conversation) => {
@@ -233,7 +214,6 @@ export default function ChatPage() {
 
         return updateConversationTimestamp({
           ...conversation,
-          // updatedAt: new Date().toISOString(),
           messages: [...conversation.messages, userMessage, aiMessage],
         });
       }),
@@ -261,7 +241,6 @@ export default function ChatPage() {
 
             return updateConversationTimestamp({
               ...conversation,
-              // updatedAt: new Date().toISOString(),
               messages: updatedMessages,
             });
           }),
@@ -289,7 +268,6 @@ export default function ChatPage() {
 
           return updateConversationTimestamp({
             ...conversation,
-            // updatedAt: new Date().toISOString(),
             messages: updatedMessages,
           });
         }),
@@ -333,7 +311,6 @@ export default function ChatPage() {
 
           return updateConversationTimestamp({
             ...conversation,
-            // updatedAt: new Date().toISOString(),
             messages: updatedMessages,
           });
         }),
@@ -343,11 +320,7 @@ export default function ChatPage() {
     }
   };
 
-  /**
-   * =====================================================
-   * Conversation Persistence (Isi Chat dari User)
-   * =====================================================
-   */
+  // Conversation Persistence (Isi Chat dari User)
 
   useEffect(() => {
     if (conversations.length === 0) {
@@ -399,7 +372,6 @@ export default function ChatPage() {
     const conversation = createConversation();
 
     setConversations((prev) => [conversation, ...prev]);
-
     setActiveConversationId(conversation.id);
 
     if (isMobile) {
@@ -463,42 +435,25 @@ export default function ChatPage() {
       conversationId,
     );
 
-    /**
-     * Tidak boleh kosong
-     */
+    //  Tidak boleh kosong
+
     if (updatedConversations.length === 0) {
       const newConversation = createConversation();
 
       setConversations([newConversation]);
-
       setActiveConversationId(newConversation.id);
 
       return;
     }
 
-    /**
-     * Hapus conversation
-     */
     setConversations(updatedConversations);
 
-    /**
-     * Jika bukan conversation aktif
-     */
     if (conversationId !== activeConversationId) {
       return;
     }
 
-    /**
-     * Pilih conversation pertama
-     */
     setActiveConversationId(updatedConversations[0].id);
   };
-
-  /**
-   * =====================================================
-   * Render
-   * =====================================================
-   */
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#fafafa]">
@@ -521,7 +476,6 @@ export default function ChatPage() {
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
         isMobile={isMobile}
-        isTablet={isTablet}
       />
 
       {isMobile && !sidebarOpen && (
@@ -541,7 +495,6 @@ export default function ChatPage() {
         className={cn(
           "flex flex-1 flex-col overflow-hidden transition-transform duration-300",
           isMobile && sidebarOpen && "hidden",
-          // (!isMobile || !sidebarOpen) && "flex",
         )}
       >
         {messages.length === 0 ? (

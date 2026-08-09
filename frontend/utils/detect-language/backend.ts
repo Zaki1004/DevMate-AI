@@ -1,11 +1,8 @@
 import { LanguageRule } from "./types";
 
 export const backendRules: LanguageRule[] = [
-  /**
-   * ===========================
-   * Node.js
-   * ===========================
-   */
+  // Node.js
+
   {
     language: "node",
     patterns: [/require\(/i],
@@ -21,11 +18,7 @@ export const backendRules: LanguageRule[] = [
     patterns: [/process\.env/i],
   },
 
-  /**
-   * ===========================
-   * Express
-   * ===========================
-   */
+  // Express
 
   {
     language: "express",
@@ -47,11 +40,7 @@ export const backendRules: LanguageRule[] = [
     patterns: [/req,\s*res/i],
   },
 
-  /**
-   * ===========================
-   * NestJS
-   * ===========================
-   */
+  // NestJS
 
   {
     language: "nestjs",
@@ -68,11 +57,7 @@ export const backendRules: LanguageRule[] = [
     patterns: [/@get/i],
   },
 
-  /**
-   * ===========================
-   * Fastify
-   * ===========================
-   */
+  // Fastify
 
   {
     language: "fastify",
@@ -84,11 +69,7 @@ export const backendRules: LanguageRule[] = [
     patterns: [/reply\.send/i],
   },
 
-  /**
-   * ===========================
-   * REST API
-   * ===========================
-   */
+  // REST API
 
   {
     language: "rest",
@@ -105,11 +86,7 @@ export const backendRules: LanguageRule[] = [
     patterns: [/status\(/i],
   },
 
-  /**
-   * ===========================
-   * GraphQL
-   * ===========================
-   */
+  // GraphQL
 
   {
     language: "graphql",
@@ -121,11 +98,7 @@ export const backendRules: LanguageRule[] = [
     patterns: [/graphql/i],
   },
 
-  /**
- * ===========================
- * Go
- * ===========================
- */
+  // Go
 
 {
   language: "go",
@@ -137,9 +110,7 @@ export const backendRules: LanguageRule[] = [
   patterns: [/package main/i],
 },
 
-/**
- * Gin
- */
+// Gin
 
 {
   language: "gin",
@@ -151,9 +122,7 @@ export const backendRules: LanguageRule[] = [
   patterns: [/gin\.context/i],
 },
 
-/**
- * Fiber
- */
+// Fiber
 
 {
   language: "fiber",
@@ -165,29 +134,21 @@ export const backendRules: LanguageRule[] = [
   patterns: [/fiber\.ctx/i],
 },
 
-/**
- * Echo
- */
+// Echo
 
 {
   language: "echo",
   patterns: [/echo\.new/i],
 },
 
-/**
- * Chi
- */
+// Chi
 
 {
   language: "chi",
   patterns: [/chi\.newrouter/i],
 },
 
-/**
- * ===========================
- * PHP
- * ===========================
- */
+// PHP
 
 {
   language: "php",
@@ -199,9 +160,7 @@ export const backendRules: LanguageRule[] = [
   patterns: [/echo\s+/i],
 },
 
-/**
- * Laravel
- */
+// Laravel
 
 {
   language: "laravel",
@@ -218,9 +177,7 @@ export const backendRules: LanguageRule[] = [
   patterns: [/eloquent/i],
 },
 
-/**
- * CodeIgniter
- */
+// CodeIgniter
 
 {
   language: "codeigniter",
@@ -232,20 +189,14 @@ export const backendRules: LanguageRule[] = [
   patterns: [/ci_controller/i],
 },
 
-/**
- * Symfony
- */
+// Symfony
 
 {
   language: "symfony",
   patterns: [/@route/i],
 },
 
-/**
- * ===========================
- * SQL
- * ===========================
- */
+// SQL
 
 {
   language: "sql",
@@ -272,11 +223,7 @@ export const backendRules: LanguageRule[] = [
   patterns: [/serial primary key/i],
 },
 
-/**
- * ===========================
- * Python
- * ===========================
- */
+// Python
 
 {
   language: "python",
@@ -293,9 +240,7 @@ export const backendRules: LanguageRule[] = [
   patterns: [/if __name__ == "__main__"/i],
 },
 
-/**
- * YAML
- */
+// YAML
 
 {
   language: "yaml",
@@ -307,9 +252,7 @@ export const backendRules: LanguageRule[] = [
   patterns: [/services:/i],
 },
 
-/**
- * Dockerfile
- */
+// Dockerfile
 
 {
   language: "dockerfile",
@@ -321,9 +264,7 @@ export const backendRules: LanguageRule[] = [
   patterns: [/CMD \[/i],
 },
 
-/**
- * Bash
- */
+// Bash
 
 {
   language: "bash",

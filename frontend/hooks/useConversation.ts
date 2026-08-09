@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import { Conversation } from "@/types/conversation";
 
 export const useConversation = () => {
@@ -12,7 +11,6 @@ export const useConversation = () => {
   return {
     conversations,
     setConversations,
-
     activeConversationId,
     setActiveConversationId,
   };
