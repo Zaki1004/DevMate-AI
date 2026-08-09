@@ -1,11 +1,7 @@
 import { LanguageRule } from "./types";
 
 export const enterpriseRules: LanguageRule[] = [
-  /**
-   * ===========================
-   * Java
-   * ===========================
-   */
+//  Java
 
   {
     language: "java",
@@ -17,11 +13,7 @@ export const enterpriseRules: LanguageRule[] = [
     patterns: [/System\.out\.println/i],
   },
 
-  /**
-   * ===========================
-   * Spring Boot
-   * ===========================
-   */
+  // Spring Boot
 
   {
     language: "spring",
@@ -38,11 +30,7 @@ export const enterpriseRules: LanguageRule[] = [
     patterns: [/@Autowired/i],
   },
 
-  /**
-   * ===========================
-   * C#
-   * ===========================
-   */
+  // C#
 
   {
     language: "csharp",
@@ -54,11 +42,7 @@ export const enterpriseRules: LanguageRule[] = [
     patterns: [/Console\.WriteLine/i],
   },
 
-  /**
-   * ===========================
-   * ASP.NET
-   * ===========================
-   */
+  // .NET
 
   {
     language: "aspnet",
@@ -70,11 +54,7 @@ export const enterpriseRules: LanguageRule[] = [
     patterns: [/WebApplication\.CreateBuilder/i],
   },
 
-  /**
-   * ===========================
-   * C++
-   * ===========================
-   */
+ // C++
 
   {
     language: "cpp",
@@ -86,11 +66,7 @@ export const enterpriseRules: LanguageRule[] = [
     patterns: [/std::cout/i],
   },
 
-  /**
-   * ===========================
-   * C
-   * ===========================
-   */
+// C
 
   {
     language: "c",

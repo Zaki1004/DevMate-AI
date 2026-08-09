@@ -3,11 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import ConversationMenu from "./conversation-menu";
-
+import { cn } from "@/lib/utils";
 import { Conversation } from "@/types/conversation";
 import { Input } from "../ui/input";
-import { cn } from "@/lib/utils";
-import { MessageSquare } from "lucide-react";
 
 type ConversationItemProps = {
   conversation: Conversation;
@@ -28,6 +26,7 @@ const ConversationItem = ({
 }: ConversationItemProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(conversation.title);
+
   const inputRef = useRef<HTMLInputElement>(null);
 
   // SINGKRONISASI JUDUL BISA BERUBAH DI SIDEBAR
@@ -42,7 +41,6 @@ const ConversationItem = ({
     if (!isEditing) return;
 
     inputRef.current?.focus();
-
     inputRef.current?.select();
   }, [isEditing]);
 
@@ -58,7 +56,6 @@ const ConversationItem = ({
     }
 
     onRename(newTitle);
-
     setIsEditing(false);
   };
 
@@ -66,7 +63,6 @@ const ConversationItem = ({
 
   const handleCancel = () => {
     setTitle(conversation.title);
-
     setIsEditing(false);
   };
 

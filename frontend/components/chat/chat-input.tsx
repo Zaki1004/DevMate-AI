@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import { CodeXml, Paperclip, SendHorizontal } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
-import ImageUpload from "../upload/image-upload";
-import ImagePreview from "../upload/image-priview";
 import CodeInput from "@/components/code/code-input";
 import { SelectedImage } from "../../types/vision";
+import ImagePreview from "../upload/image-priview";
+import ImageUpload from "../upload/image-upload";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,7 +33,6 @@ const ChatInput = ({ onSend }: ChatInputProps) => {
     };
 
     handleResize();
-
     window.addEventListener("resize", handleResize);
 
     return () => window.removeEventListener("resize", handleResize);
@@ -45,7 +44,6 @@ const ChatInput = ({ onSend }: ChatInputProps) => {
     }
 
     onSend(message, selectedImage?.file, sourceCode);
-
     setMessage("");
     setSourceCode("");
     setShowCodeInput(false);
@@ -90,19 +88,11 @@ const ChatInput = ({ onSend }: ChatInputProps) => {
 
   return (
     <div
-      className={`
-    fixed
-    left-1/2
-    z-50
-    -translate-x-1/2
-    transition-all
-    duration-300
-
-    ${
-      isMobile
-        ? "bottom-4 w-[96%] max-w-none px-2"
-        : "bottom-6 w-full max-w-4xl px-4"
-    }
+      className={`fixed left-1/2 z-50 -translate-x-1/2 transition-all duration-300 ${
+        isMobile
+          ? "bottom-4 w-[96%] max-w-none px-2"
+          : "bottom-6 w-full max-w-4xl px-4"
+      }
   `}
     >
       <div className="mx-auto w-full max-w-4xl">
@@ -117,7 +107,6 @@ const ChatInput = ({ onSend }: ChatInputProps) => {
         )}
 
         {/* Code Preview */}
-
         {sourceCode.trim() && (
           <CodePreview sourceCode={sourceCode} onRemove={handleRemoveCode} />
         )}
@@ -132,12 +121,7 @@ const ChatInput = ({ onSend }: ChatInputProps) => {
         >
           <div className="flex items-center gap-3">
             <Input
-              className={`
-border-0
-shadow-none
-
-${isMobile ? "h-9 text-sm" : "h-11 text-base"}
-`}
+              className={`border-0 shadow-none ${isMobile ? "h-9 text-sm" : "h-11 text-base"}`}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Ask About React, Next.js, TypeScript, Tailwind CSS..."

@@ -1,8 +1,7 @@
-import { frontendRules } from "./frontend";
 import { backendRules } from "./backend";
 import { enterpriseRules } from "./enterprise";
+import { frontendRules } from "./frontend";
 import { mobileRules } from "./mobile";
-
 import { LanguageRule } from "./types";
 
 const languageRules: LanguageRule[] = [
