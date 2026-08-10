@@ -3,12 +3,19 @@ import express from "express";
 import chatRoute from "./routes/chat.route";
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
 app.get("/", (_req, res) => {
   res.json({
     message: "Backend Running 🚀",
+  });
+});
+
+app.get("/api/health", (_req, res) => {
+  res.status(200).json({
+    status: "Sehat",
   });
 });
 
