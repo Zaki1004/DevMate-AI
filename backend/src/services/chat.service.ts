@@ -4,9 +4,8 @@ import groq from "../utils/groq";
 export async function* generateStreamResponse(
   request: ChatRequest,
 ) {
-
   const userPrompt = request.sourceCode?.trim()
-  ? `
+    ? `
 Lakukan code review terhadap kode berikut.
 
 Pertanyaan pengguna:
@@ -23,18 +22,9 @@ Jangan mengarang bug.
 Jika kode sudah baik, jelaskan alasannya.
 Berikan seluruh jawaban menggunakan Markdown yang valid sesuai format yang telah ditentukan.
 `
-  : request.message;
+    : request.message;
 
-
-  const completion =
-    await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
-      stream: true,
-
-      messages: [
-        {
-          role: "system",
-          content: `
+  const systemPrompt = `
 Kamu adalah DevMate AI.
 
 DevMate AI adalah AI Assistant yang berfokus membantu programmer, khususnya Frontend Developer, dalam memahami source code, melakukan code review, debugging, refactoring, serta memberikan rekomendasi best practice.
@@ -62,6 +52,15 @@ DevMate AI adalah AI Assistant yang berfokus membantu programmer, khususnya Fron
 - Jangan membuat informasi yang tidak benar.
 - Jika tidak yakin terhadap suatu hal, jelaskan keterbatasanmu.
 - Bersikap seperti mentor yang membantu programmer belajar.
+
+## Conversation Context
+
+Percakapan sebelumnya dapat digunakan sebagai konteks untuk memahami pertanyaan pengguna.
+
+- Pertahankan konteks percakapan selama masih relevan dengan pertanyaan pengguna.
+- Jika pengguna menggunakan kata seperti "ini", "itu", "nya", "tersebut", atau pertanyaan lanjutan lainnya, gunakan percakapan sebelumnya untuk memahami referensinya.
+- Jangan mengulang seluruh percakapan kecuali diperlukan.
+- Jika pertanyaan baru tidak berhubungan dengan percakapan sebelumnya, fokus pada pertanyaan terbaru.
 
 ## Format Markdown
 
@@ -99,7 +98,7 @@ Jika pengguna menyertakan source code, lakukan analisis berdasarkan kode yang di
 - Berikan saran refactoring jika diperlukan.
 - Berikan rekomendasi clean code dan best practice.
 - Jangan mengubah perilaku kode kecuali diminta.
-- Jika kode tidak lengkap, jelaskan bahwa analisis hanya berdasarkan potongan kode yang diberikan.
+- Jika kode tidak lengkap, jelaskan bahwa analisis hanya berdasarkan potongan kode yang diberikan pengguna.
 - Jangan mengasumsikan adanya file, konfigurasi, atau implementasi lain yang tidak diberikan pengguna.
 - Fokus hanya pada source code yang diberikan.
 - Jangan membahas deployment, database, atau arsitektur project apabila tidak terlihat pada source code.
@@ -176,21 +175,44 @@ Tetapi WAJIB menggunakan:
 ## Potensi Bug
 
 Gunakan Markdown yang valid agar dapat dirender oleh ReactMarkdown.
-`
-        },
-        {
-          role: "user",
-          content: userPrompt,
-        },
-      ],
+`;
+
+  const history = (request.history ?? [])
+    .filter((item) => {
+      return (
+        (item.role === "user" || item.role === "assistant") &&
+        item.content.trim()
+      );
+    })
+    .slice(-20);
+
+  const messages = [
+    {
+      role: "system" as const,
+      content: systemPrompt,
+    },
+
+    ...history,
+
+    {
+      role: "user" as const,
+      content: userPrompt,
+    },
+  ];
+
+  const completion =
+    await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      stream: true,
+      messages,
     });
 
   for await (const chunk of completion) {
     const token =
       chunk.choices[0]?.delta?.content ?? "";
 
-   if (!token) continue;
+    if (!token) continue;
 
     yield token;
   }
-};
+}

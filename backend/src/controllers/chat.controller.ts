@@ -6,8 +6,21 @@ export const chatController = async (
   res: Response,
 ) => {
   try {
-    const { message, sourceCode } = req.body;
+    const { message, sourceCode, history: historyString } = req.body;
     const image = req.file;
+
+     let history = [];
+
+    if (historyString) {
+      try {
+        history = JSON.parse(historyString);
+      } catch {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid chat history.",
+        });
+      }
+    }
 
     res.setHeader("Content-Type", "text/plain; charset=utf-8");
     res.setHeader("Transfer-Encoding", "chunked");
@@ -19,6 +32,7 @@ export const chatController = async (
       message,
       sourceCode,
       image,
+      history,
     });
 
     for await (const token of stream) {
@@ -30,7 +44,10 @@ export const chatController = async (
     console.error(error);
 
     if (!res.headersSent) {
-      res.status(500).send("Internal Server Error");
+      res.status(500).json({
+        success: false,
+        message: "Failed to generate AI response.",
+      });
     } else {
       res.end();
     }
