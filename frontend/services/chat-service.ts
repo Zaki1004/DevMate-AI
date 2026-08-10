@@ -3,7 +3,7 @@ type ChatHistoryMessage = {
   content: string;
 };
 
-const API_URL = "http://localhost:5000/api/chat";
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/chat`;
 
 export const streamMessage = async (
   message: string,
