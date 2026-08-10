@@ -1,9 +1,15 @@
+type ChatHistoryMessage = {
+  role: "user" | "assistant";
+  content: string;
+};
+
 const API_URL = "http://localhost:5000/api/chat";
 
 export const streamMessage = async (
   message: string,
   sourceCode?: string,
   image?: File,
+  history: ChatHistoryMessage[] = [],
   onChunk?: (chunk: string) => void,
 ) => {
   const formData = new FormData();
@@ -17,6 +23,11 @@ export const streamMessage = async (
   if (image) {
     formData.append("image", image);
   }
+
+ formData.append(
+  "history",
+  JSON.stringify(history),
+);
 
   const response = await fetch(API_URL, {
     method: "POST",

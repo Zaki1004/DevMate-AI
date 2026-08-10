@@ -1,19 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-
 import ChatBubble from "@/components/chat/chat-bubble";
 import ChatInput from "@/components/chat/chat-input";
 import EmptyState from "@/components/chat/empty-state";
-
-import { streamMessage } from "@/services/chat-service";
-
-import { Message } from "@/types/chat";
-
 import ConversationSidebar from "@/components/common/sidebar";
 import { Button } from "@/components/ui/button";
 import { useConversation } from "@/hooks/useConversation";
 import { cn } from "@/lib/utils";
+import { streamMessage } from "@/services/chat-service";
+import { Message } from "@/types/chat";
 import { generateConversationTitle } from "@/utils/chat-management/auto-title-generator";
 import {
   createConversation,
@@ -223,8 +219,16 @@ export default function ChatPage() {
       focusLatestConversation();
     });
 
+    const history = messages
+      .filter((chat) => chat.message.trim() && !chat.streaming)
+      .slice(-20)
+      .map((chat) => ({
+        role: chat.isUser ? ("user" as const) : ("assistant" as const),
+        content: chat.message,
+      }));
+
     try {
-      await streamMessage(message, sourceCode, image, (chunk) => {
+      await streamMessage(message, sourceCode, image, history, (chunk) => {
         setConversations((prev) =>
           prev.map((conversation) => {
             if (conversation.id !== activeConversationId) return conversation;
@@ -302,10 +306,8 @@ export default function ChatPage() {
           const updatedMessages = [...conversation.messages];
 
           updatedMessages[updatedMessages.length - 1] = {
-            id: generateId(),
+            ...updatedMessages[updatedMessages.length - 1],
             message: "Terjadi kesalahan.",
-            isUser: false,
-            createdAt: new Date().toISOString(),
             streaming: false,
           };
 
