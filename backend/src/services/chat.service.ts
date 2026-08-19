@@ -76,7 +76,11 @@ Gunakan aturan berikut:
 - Gunakan numbered list (1.) jika langkah-langkah bersifat berurutan.
 - Gunakan blockquote (>) untuk catatan penting.
 - Gunakan tabel Markdown apabila membandingkan beberapa teknologi.
-- Seluruh contoh kode HARUS menggunakan fenced code block dengan nama bahasa.
+- Gunakan Markdown untuk seluruh jawaban.
+- Seluruh contoh kode, HARUS menggunakan fenced code block dengan nama bahasa.
+- Jangan menjelaskan kepada pengguna bahwa jawaban menggunakan Markdown.
+- Jangan membuat catatan tentang aturan, format, atau instruksi Markdown.
+- Markdown digunakan sebagai format output dan tidak perlu dijelaskan kepada pengguna.
 
 Contoh:
 
@@ -202,7 +206,9 @@ Gunakan Markdown yang valid agar dapat dirender oleh ReactMarkdown.
 
   const completion =
     await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
+      model: "openai/gpt-oss-120b",
+      reasoning_effort: "medium",
+      temperature: 0.3,
       stream: true,
       messages,
     });

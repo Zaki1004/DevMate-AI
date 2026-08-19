@@ -69,7 +69,7 @@ const ConversationItem = ({
   return (
     <div
       className={cn(
-        "flex rounded-xl transition-all duration-200",
+        "flex min-w-0 rounded-xl transition-all duration-200",
         collapsed
           ? "justify-center py-2"
           : "items-center justify-between px-3 py-2",
@@ -82,7 +82,7 @@ const ConversationItem = ({
       <Button
         onClick={onSelect}
         className={cn(
-          "flex h-auto flex-1 rounded-xl transition-all duration-200",
+          "flex h-auto flex-1 min-w-0 rounded-xl transition-all duration-200 overflow-hidden",
           collapsed
             ? "justify-center p-0"
             : "flex-col items-start gap-1 px-3 py-2 text-left",
